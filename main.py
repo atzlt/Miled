@@ -1,5 +1,3 @@
-import sys
-
 from interpreter.interpret import Interpreter
 from argparse import ArgumentParser
 
@@ -17,10 +15,12 @@ if __name__ == "__main__":
             print(Interpreter(args.code).run())
     except FileNotFoundError:
         print("File not found.")
-    except IndexError:
+    except IndexError as E:
+        print(E)
         print("An IndexError occurred. It's likely that you've used an index out of range, or you have too many "
               "enclosing marks. Check your code.")
-    except TypeError:
+    except TypeError as E:
+        print(E)
         print("A TypeError occurred. It's likely that you've forgot to enclose a Caller, or you messed "
               "up the types. Use \"->...\" commands to convert types.")
     except Exception as E:

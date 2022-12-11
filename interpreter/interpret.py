@@ -1,61 +1,23 @@
 from copy import deepcopy as copy
+from typing import Callable
 
-from interpreter.util_classes import Caller, Env, Anchor, VarEntry, CallerEntry
+from interpreter.util_classes import Caller, Env, VarEntry, CallerEntry
 from interpreter.builtins import BUILTINS_TABLE
-from interpreter.lex import tokenize, Token
-
-
-def get_anchors(tokens: list[Token]):
-    # !TODO: rewrite anchor detection
-
-    kw_stack: list[tuple[int, str]] = []
-    anchors: dict[int, Anchor] = {}
-    for i in range(len(tokens)):
-        kw = tokens[i].value
-        if kw == "else":
-            while len(kw_stack) >= 0 and kw_stack[-1][1] != "if::":
-                anchors[kw_stack[-1][0]].add_jump(i)  # implicitly ends other things
-                kw_stack.pop()
-            if len(kw_stack) > 0:
-                anchors[kw_stack[-1][0]].add_jump(i)
-            anchors[i] = Anchor()
-            kw_stack.append((i, kw))
-        elif kw == ":fi":
-            while len(kw_stack) > 0 and kw_stack[-1][1] == "else":
-                anchors[kw_stack[-1][0]].add_jump(i)
-                kw_stack.pop()
-            anchors[kw_stack[-1][0]].add_jump(i)
-            kw_stack.pop()
-        elif kw == ":ihw":
-            while len(kw_stack) > 0 and kw_stack[-1][1] != "while:":
-                anchors[kw_stack[-1][0]].add_jump(i)
-                kw_stack.pop()
-            anchors[kw_stack[-1][0]].add_jump(i)
-            anchors[i] = Anchor(jump_to=[kw_stack[-1][0] - 1])
-            kw_stack.pop()
-        elif kw == ":*!":
-            if len(kw_stack) > 0:
-                for k in kw_stack:
-                    anchors[k[0]].add_jump(i)
-                kw_stack = []
-        elif kw in ["if:", "if::", "while:"]:
-            kw_stack.append((i, kw))
-            anchors[i] = Anchor()
-    while len(kw_stack) > 0:
-        anchors[kw_stack[-1][0]].add_jump(len(tokens))
-        kw_stack.pop()
-    return anchors
+from interpreter.lex import tokenize, Token, get_anchors
 
 
 class Interpreter:
-    def __init__(self, string: str, table=None):
-        self.tokens = tokenize(string)
+    def __init__(self, code: str | list[Token], table=None, tokenizer: Callable[[str], list[Token]] | None = tokenize):
+        if tokenizer is not None or type(code) == str:
+            self.tokens = tokenizer(code)
+        else:
+            self.tokens = code
         self.i = 0
         self.table = Env()
         if table is None:
             self.table.prev = copy(BUILTINS_TABLE)
         else:
-            self.table.prev = copy(table)
+            self.table = table
         self.var_stack: list[list[VarEntry]] = [[]]
         self.call_stack: list[CallerEntry] = []
         self.anchors = get_anchors(self.tokens)
@@ -93,6 +55,10 @@ class Interpreter:
             self.table = Env(p=self.table)
         elif kw == "}":
             self.table = self.table.prev
+        elif kw == "<:":
+            j = self.anchors[self.i].jump_to[0]
+            self.var_stack[-1].append(VarEntry(Token(Token.CODE, None), self.tokens[1 + self.i:j]))
+            self.i = j
 
     def run(self):
         tokens = self.tokens
@@ -124,4 +90,7 @@ class Interpreter:
             self.resolve()
 
         # IMPLICIT OUTPUT
-        return ", ".join([str(ve.value) for ve in self.var_stack[0]])
+        if len(self.var_stack[0]) == 1:
+            return self.var_stack[0][0].value
+        else:
+            return str([ve.value for ve in self.var_stack[0]])

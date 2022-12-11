@@ -1,7 +1,16 @@
 from dataclasses import dataclass
 from typing import Callable, Self
 
-from interpreter.lex import Token
+
+class Token:
+    VAL = 1
+    ID = 2
+    KW = 3
+    CODE = 4
+
+    def __init__(self, kind: int, value=None):
+        self.kind = kind
+        self.value = value
 
 
 class Env:
@@ -53,7 +62,7 @@ class Caller:
     """
     def __init__(
             self, arity: int,
-            callback: Callable[[list, Env | None], tuple[any, list[tuple[int, bool, any]], int | None]]):
+            callback: Callable[[list, Env | None], tuple[any, list[tuple[int, any, bool]], int | None]]):
         """
         Initialize a caller instance.
 
@@ -81,13 +90,15 @@ class Caller:
 
     def add_args(self, args: list):
         self.args += args
+        return self
 
     def enclose(self):
         if self.arity > 0:
             while not self.is_fulfilled():
                 self.add_args([None])
+        return self
 
-    def resolve(self, table: Env):
+    def resolve(self, table: Env | None):
         return self.callback(self.args, table)
 
 

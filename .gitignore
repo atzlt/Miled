@@ -2,7 +2,7 @@ venv/
 .idea/
 test/
 main.spec
-dist/
+dist-*/
 build/
 assets/
 run-miled.spec
