@@ -36,7 +36,7 @@ def tokenize(string: str) -> list[Token]:  # !TODO: rewrite tokenizer
     buf = ""
     str_flag = False
     while i < len(string):
-        if string[i] == "\"":
+        if string[i] == "\"" and (i == 0 or string[i - 1] != "\\"):
             str_flag = not str_flag
         if string[i].isspace() or i == len(string) - 1:
             if str_flag:
@@ -56,7 +56,13 @@ def tokenize(string: str) -> list[Token]:  # !TODO: rewrite tokenizer
                 elif buf == "false":
                     t.append(Token(Token.VAL, False))
                 elif buf[0] == "\"" and buf[-1] == "\"":
-                    t.append(Token(Token.VAL, buf[1:-1]))
+                    t.append(Token(
+                        Token.VAL,
+                        buf[1:-1]
+                        .replace(r"\"", "\"")
+                        .replace(r"\\", "\\")
+                        .replace(r"\n", "\n")
+                    ))
                 elif buf in KEYWORDS:
                     t.append(Token(Token.KW, buf))
                 else:

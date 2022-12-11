@@ -1,2 +1,8 @@
 venv/
 .idea/
+test/
+main.spec
+dist/
+build/
+assets/
+run-miled.spec
