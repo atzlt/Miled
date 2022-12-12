@@ -1,6 +1,18 @@
 from interpreter.interpret import Interpreter
 from argparse import ArgumentParser
 
+
+def try_run(code: str):
+    itpr = Interpreter(code)
+    try:
+        print(itpr.run())
+    except Exception as IE:
+        print("Cannot run program, an error occurred:")
+        print(IE)
+        print("near: \"" + str(itpr.tokens[itpr.i].value) + "\" at word #" + str(itpr.i))
+        print("Check your code. If you confirm there shouldn't be any problem, report an issue.")
+
+
 if __name__ == "__main__":
     parser = ArgumentParser("Miled language interpreter")
     parser.add_argument("-f", "--file")
@@ -10,19 +22,11 @@ if __name__ == "__main__":
     try:
         if args.file is not None:
             file = open(args.file, "r").read()
-            print(Interpreter(file).run())
+            try_run(file)
         elif args.code is not None:
-            print(Interpreter(args.code).run())
+            try_run(args.code)
     except FileNotFoundError:
         print("File not found.")
-    except IndexError as E:
-        print(E)
-        print("An IndexError occurred. It's likely that you've used an index out of range, or you have too many "
-              "enclosing marks. Check your code.")
-    except TypeError as E:
-        print(E)
-        print("A TypeError occurred. It's likely that you've forgot to enclose a Caller, or you messed "
-              "up the types. Use \"->...\" commands to convert types.")
     except Exception as E:
-        print("An error occurred.")
+        print("Unknown error occurred:")
         print(E)

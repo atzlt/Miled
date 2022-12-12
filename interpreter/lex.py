@@ -33,7 +33,12 @@ def to_token(buf: str) -> Token:
     if buf[0] == "\"" and buf[-1] == "\"":
         return Token(
             Token.VAL,
-            buf[1:-1].replace("\\\"", "\"").replace("\\\\", "\\")
+            buf[1:-1]
+            .replace(r"\"", "\"")
+            .replace(r"\\", "\\")
+            .replace(r"\n", "\n")
+            .replace(r"\t", "\t")
+            .replace(r"\r", "\r")
         )
     elif is_int(buf):
         return Token(Token.VAL, int(buf))
@@ -45,6 +50,8 @@ def to_token(buf: str) -> Token:
         return Token(Token.VAL, False)
     elif buf == "??":
         return Token(Token.VAL, None)
+    elif buf == "[]":
+        return Token(Token.VAL, [])
     elif buf in KEYWORDS:
         return Token(Token.KW, buf)
     else:

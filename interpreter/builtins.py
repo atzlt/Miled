@@ -120,6 +120,8 @@ BUILTINS_TABLE = Env(table={
     "wS": Caller(1, lambda x, _: (x[0][1].split(), None)),
     ",S": Caller(1, lambda x, _: (x[0][1].split(","), None)),
 
+    "join": Caller(2, lambda x, _: (x[0][1].join(x[1][1]), None)),
+
     "map": Caller(2, lambda x, t: (map_over(x[0][1], x[1][1], t), None)),
 
     # * ARITHMETIC FUNCTIONS

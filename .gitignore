@@ -6,3 +6,4 @@ dist-*/
 build/
 assets/
 run-miled.spec
+pyinstaller-build

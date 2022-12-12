@@ -110,18 +110,18 @@ class InterpreterTestCase(unittest.TestCase):
         )
         self.assertEqual(
             # A FizzBuzz Example
-            " ".join([
+            "\n".join([
                 "FizzBuzz" if i % 3 == 0 and i % 5 == 0 else
                 "Fizz" if i % 3 == 0 else
                 "Buzz" if i % 5 == 0
                 else str(i)
                 for i in range(1, 101)
-            ]) + " ",
-            Interpreter("""
+            ]),
+            Interpreter(r"""
             := x 0
-            := s ""
+            := s []
             while: ~ += x 1 != x 101 ;
-                += s if::
+                push s if::
                     & div 3 x div 5 x "FizzBuzz"
                     else
                         if:: div 3 x "Fizz"
@@ -131,9 +131,8 @@ class InterpreterTestCase(unittest.TestCase):
                             :fi
                         :fi
                     :fi
-                += s " "
             :ihw
-            s
+            join "\n" s
             """).run()
         )
         self.assertEqual(
