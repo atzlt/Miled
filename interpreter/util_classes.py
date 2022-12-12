@@ -34,16 +34,22 @@ class Env:
     def set(self, key: str, val, origin=True):
         if key in self.table:
             self.table[key] = val
-            return True
+            if not origin:
+                return True
         elif self.prev is not None:
             ret = self.prev.set(key, val, origin=False)
             if not ret:
                 self.table[key] = val
-            return True
+            if not origin:
+                return True
         else:
             if origin:
                 self.table[key] = val
-            return False
+            else:
+                return False
+
+    s = set
+    d = force_def
 
 
 class Caller:
@@ -62,13 +68,12 @@ class Caller:
     """
     def __init__(
             self, arity: int,
-            callback: Callable[[list, Env | None], tuple[any, list[tuple[int, any, bool]], int | None]]):
+            callback: Callable[[list[tuple[str, any]], Env | None], tuple[any, int | None]]):
         """
         Initialize a caller instance.
 
         The callback is a function that is called when resolving the caller. The callback should return a tuple: the
-        first value is the return value; the second value is the **"write list"**, a list about which values in the
-        symbol table should change; the third value is the "jump" flag, indicating how the pointer should jump
+        first value is the return value, the third value is the "jump" flag, indicating how the pointer should jump
         according to the anchor.
 
         :param arity: the expected number or arguments. If set to negative values it accepts unlimited number of
@@ -88,14 +93,16 @@ class Caller:
     def args_left(self):
         return self.arity - len(self.args)
 
-    def add_args(self, args: list):
+    def add_args(self, args: list[tuple[str | None, any]]):
+        if self.arity > 0 and self.args_left() < len(args):
+            raise RuntimeError("Too many arguments: expected " + str(self.arity) + ", got " + str(len(args)))
         self.args += args
         return self
 
     def enclose(self):
         if self.arity > 0:
             while not self.is_fulfilled():
-                self.add_args([None])
+                self.add_args([("", None)])
         return self
 
     def resolve(self, table: Env | None):
@@ -113,13 +120,7 @@ class Anchor:
 
 
 @dataclass
-class VarEntry:
-    token: Token
+class ValEntry:
+    id: str | None
+    pos: int
     value: any
-
-
-@dataclass
-class CallerEntry:
-    pos: int | None
-    token: Token
-    caller: Caller

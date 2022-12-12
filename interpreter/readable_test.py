@@ -64,6 +64,10 @@ class InterpreterTestCase(unittest.TestCase):
 
     def test_interpreter(self):
         self.assertEqual(
+            3,
+            Interpreter("<- x 3 x").run()
+        )
+        self.assertEqual(
             True,
             Interpreter("<- x n+ ;! > x 1 ; 0").run()
         )
@@ -77,7 +81,7 @@ class InterpreterTestCase(unittest.TestCase):
         )
         self.assertEqual(
             3,
-            Interpreter("<- x n+ ;! <- \"x\" x 1 ;! { x 2 ; }").run()
+            Interpreter("<- x n+ ;! <- x ;! x 1 ;! { x 2 ; }").run()
         )
         self.assertEqual(
             2,
@@ -118,11 +122,11 @@ class InterpreterTestCase(unittest.TestCase):
             := s ""
             while: ~ += x 1 != x 101 ;
                 += s if::
-                    & divs 3 x divs 5 x "FizzBuzz"
+                    & div 3 x div 5 x "FizzBuzz"
                     else
-                        if:: divs 3 x "Fizz"
+                        if:: div 3 x "Fizz"
                         else
-                            if:: divs 5 x "Buzz"
+                            if:: div 5 x "Buzz"
                             else ->str x
                             :fi
                         :fi
@@ -137,12 +141,31 @@ class InterpreterTestCase(unittest.TestCase):
             Interpreter(":= x [ 1 2 3 ; ->int + ->str @ x 1 ->str @ x 2").run()
         )
         self.assertEqual(
+            [1, 1],
+            Interpreter(":= x [ 1 2 3 ; ~ pop x pop x pushto 1 x x ;").run()
+        )
+        self.assertEqual(
             3,
             Interpreter("def x ,S \"y,z,w\" <: n+ y z w ; :> x 1 1 1").run()
         )
         self.assertEqual(
             [2, 3, 4],
             Interpreter("def f [ \"x\" ; <: + x 1 :> := x [ 1 2 3 ; map f ;! x").run()
+        )
+        self.assertEqual(
+            # Euclid Algorithm
+            3,
+            Interpreter(r"""
+            def gcd /S "xy" <:
+                if:: div min x y max x y min x y
+                else gcd min x y % max x y min x y :fi
+            :>
+            def lgcd "x" <:
+                while: >= len x 2 pushto gcd pop x pop x x :ihw
+                @ x 0
+            :>
+            lgcd [ 39 15 78 ;
+            """).run()
         )
 
 
