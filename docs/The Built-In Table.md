@@ -11,8 +11,7 @@ Some callers are for control flows, and are thus not presented here.
 |  `~`   |          `~ stmt stmt ... ;`          | Continuation. Only returns the last output.                                                                                 |
 |  `o>`  |               `o> val`                | Output the value.                                                                                                           |
 | `def`  | `def id list-of-param-id <: stmts :>` | Define a caller.                                                                                                            |
-|  `@`   |             `@ list num`              | List access.                                                                                                                |
-| `@<-`  |          `@<- list num val`           | Change the value at index.                                                                                                  |
+|  `fn`  |   `fn list-of-param-id <: stmts :>`   | Define an inline anonymous caller.                                                                                          |
 
 ### Operators
 
@@ -59,7 +58,10 @@ They're the same as Python's builtin functions.
 |     `:.<`     | `:.< num num num`  | Range, exclude the ending index, with step.                                                                |
 |     `@?`      |   `@? list val`    | First index of `val` in `list`.                                                                            |
 | `[:]`, `[::]` | `[:] list num num` | Same as Python slices.                                                                                     |
+|      `@`      |    `@ list num`    | List access.                                                                                               |
+|     `@<-`     | `@<- list num val` | Change the value at index.                                                                                 |
 |     `+@`      | `+@ list num val`  | Append `val` before index `num` in `list`.                                                                 |
+|     `-@`      |   `+@ list num`    | Pop and return the value at index.                                                                         |
 |     `cS`      |      `cS str`      | Split (same as Python `.split("")`                                                                         |
 |     `wS`      |      `wS str`      | Split by whitespace (same as Python `.split()`)                                                            |
 |     `,S`      |      `,S str`      | Split by comma (same as Python `.split(",")`)                                                              |
@@ -76,11 +78,23 @@ For callers with note `(l)`, adding `l` to it forms its list form.
 |       `(nl)max`, `(nl)min`        | `max x y` | Maximum and minimum (same as Python `max()`, `min()`) |
 | `abs`, `sqrt`, `sin`, `cos`, `ln` |           | You know what these mean, right?                      |
 |         `PI`, `EE`, `II`          |           | Same as Python `math.pi`, `math.e`, `1j`              |
+|               `rnd`               |   `rnd`   | Random number in `[0, 1)`.                            |
+|              `rnd#`               | `rnd# n`  | Random integer in `[0, n]`.                           |
 
 #### Number-Theoretic
 
-| Caller / Variable |       Usage       | Function                 |
-|:-----------------:|:-----------------:|:-------------------------|
-|       `div`       | `div small large` | Divides. Returns `bool`. |
-
-
+| Caller / Variable |       Usage       | Function                                                                                |
+|:-----------------:|:-----------------:|:----------------------------------------------------------------------------------------|
+|       `div`       | `div small large` | Divides. Returns `bool`.                                                                |
+|     `(nl)gcd`     |                   | **G**reatest **c**ommon **d**ivisor.                                                    |
+|      `prim?`      |                   | Is it **prim**e?                                                                        |
+|      `prim@`      |                   | The `n`-th **prim**e.                                                                   |
+|      `prim]`      |     `prim] n`     | A list of the first `n` primes.                                                         |
+|      `pFctS`      |                   | **P**rime **f**a**ct**ors as a **s**et                                                  |
+|      `pFctM`      |                   | **P**rime **f**a**ct**ors as a **m**ultiset                                             |
+|      `pFctE`      |                   | **P**rime **f**a**ct**ors in **e**xponential form, e.g. `[(2, 3), (3, 8), (7, 1), ...]` |
+|      `#pFct`      |                   | The number of distinct prime factors                                                    |
+|     `#pFctM`      |                   | The number of primes, counting multiplicities                                           |
+|  `divs`, `#divs`  |                   | Divisors, the number of divisors, resp.                                                 |
+|     `eulPhi`      |                   | The Euler Phi function, a.k.a. totient function.                                        |
+|      `coprm`      |                   | All the **copr**i**m**e numbers less than `n`.                                          |

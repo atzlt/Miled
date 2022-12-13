@@ -24,7 +24,7 @@ def is_rep_sym(string: str):
 KEYWORDS = [
     ";!", ";",  # TERMINATION
     "<:", ":>",  # PROC MARKERS
-    ":fi", ":*!",  # END MARKERS
+    ":fi",  # END MARKERS
     "{", "}",  # SCOPE MARKERS
 ]
 

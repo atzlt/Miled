@@ -118,14 +118,13 @@ class InterpreterTestCase(unittest.TestCase):
                 for i in range(1, 101)
             ]),
             Interpreter(r"""
-            def f cS "x" <:
-                := a div 3 x := b div 5 x
-                if:: & a b "FizzBuzz"
-                else if:: a "Fizz"
-                else if:: b "Buzz"
-                else ->str x
-            :>
-            join "\n" map f ;! ..= 1 100
+            join "\n"
+                map fn cS "x" <:
+                    if:: div 15 x "FizzBuzz"
+                    else if:: div 3 x "Fizz"
+                    else if:: div 5 x "Buzz"
+                    else ->str x
+                :> ..= 1 100
             """).run()
         )
         self.assertEqual(
@@ -145,19 +144,42 @@ class InterpreterTestCase(unittest.TestCase):
             Interpreter("def f [ \"x\" ; <: + x 1 :> := x [ 1 2 3 ; map f ;! x").run()
         )
         self.assertEqual(
+            [2, 3, 4],
+            Interpreter(":= x [ 1 2 3 ; map fn cS \"x\" <: + x 1 :> x").run()
+        )
+        self.assertEqual(
             # Euclid Algorithm
             3,
             Interpreter(r"""
-            def gcd cS "xy" <:
+            def myGcd cS "xy" <:
                 if:: div min x y max x y min x y
                 else gcd min x y % max x y min x y :fi
             :>
-            def lgcd "x" <:
-                while: >= len x 2 pushto gcd pop x pop x x :ihw
+            def myLGcd "x" <:
+                while: >= len x 2 pushto myGcd pop x pop x x :ihw
                 @ x 0
             :>
-            lgcd [ 39 15 78 ;
+            myLGcd [ 39 15 78 ;
             """).run()
+        )
+        self.assertEqual(
+            10,
+            Interpreter("@ @ pFctE ** 4 5 0 1").run()
+        )
+        self.assertEqual(
+            # Factorial example
+            120,
+            Interpreter(r"""
+            def factorial cS "x" <:
+                if:: == x 1 1
+                else * x factorial - x 1
+            :>
+            factorial 5
+            """).run()
+        )
+        self.assertEqual(
+            [2, 4, 3],
+            Interpreter(":= x [ 1 2 3 ; ~ -@ x 0 +@ x 1 4 x ;").run()
         )
 
 

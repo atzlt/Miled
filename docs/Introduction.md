@@ -111,6 +111,8 @@ while: ... if: ... :ihw
 
 is valid code.
 
+Notice that open branches are automatically closed at EOF.
+
 ### Caller Definition
 
 ```
@@ -124,8 +126,36 @@ def gcd cS "xy" <:
     if:: div min x y max x y min x y
     else gcd min x y % max x y min x y :fi
 :>
-def lgcd "x" <:
+def lgcd cS "x" <:
     while: >= len x 2 pushto gcd pop x pop x x :ihw
     @ x 0
 :>
 ```
+
+Notice that the second argument must be a **list** of **strings**.
+
+You use `fn` for inline anonymous callers:
+
+```
+:= x [ 1 2 3 ; map fn cS "x" <: + x 1 :> x"
+```
+
+Notice that open `<:`'s are automatically closed at EOF.
+
+### Scopes
+
+Sometimes it's just convenient to set up a scope. `def` or `fn` callers set up a scope for defined callers, but `if`
+and `while` _do not_ set up a scope. Similar to many languages, _Miled_ use `{` and `}` to mark code blocks:
+
+```
+:= x 3 { := x 4 } x
+```
+
+This outputs 3, because `:=` defines a variable in the current scope.
+
+```
+:= x 3 { <- x 4 } x
+```
+
+This outputs 3, because `<-` will check for the nearest scope with `x` defined and set the value. (If no scopes with `x`
+defined are found, `<-` will work in the current scope.)

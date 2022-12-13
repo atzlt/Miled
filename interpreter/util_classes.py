@@ -13,6 +13,22 @@ class Token:
         self.value = value
 
 
+@dataclass
+class ValEntry:
+    id: str | None
+    pos: int
+    value: any
+
+
+@dataclass
+class ReturnValue:
+    ret: any
+    jump: int = None
+
+
+R = ReturnValue  # A shorthand method
+
+
 class Env:
     def __init__(self, p: Self | None = None, table: dict = None):
         if table is None:
@@ -68,7 +84,7 @@ class Caller:
     """
     def __init__(
             self, arity: int,
-            callback: Callable[[list[tuple[str, any]], Env | None], tuple[any, int | None]]):
+            callback: Callable[[list[tuple[str, any]], Env | None], ReturnValue]):
         """
         Initialize a caller instance.
 
@@ -109,6 +125,9 @@ class Caller:
         return self.callback(self.args, table)
 
 
+C = Caller  # A shorthand method
+
+
 class Anchor:
     def __init__(self, jump_to: list[int] = None):
         if jump_to is None:
@@ -117,10 +136,3 @@ class Anchor:
 
     def add_jump(self, dest: int):
         self.jump_to.append(dest)
-
-
-@dataclass
-class ValEntry:
-    id: str | None
-    pos: int
-    value: any

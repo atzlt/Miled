@@ -59,11 +59,11 @@ class Interpreter:
 
     def __resolve(self, enclose=False):
         caller, call_ent = self.__fill_arg(enclose=enclose)
-        (ret, jump) = caller.resolve(self.table)
-        if ret is not None:
-            self.var_stack[-1].append(ValEntry(None, self.i, ret))
-        if jump is not None:
-            self.i = self.anchors[call_ent.pos].jump_to[jump]
+        ret = caller.resolve(self.table)
+        if ret.ret is not None:
+            self.var_stack[-1].append(ValEntry(None, self.i, ret.ret))
+        if ret.jump is not None:
+            self.i = self.anchors[call_ent.pos].jump_to[ret.jump]
 
     def run(self):
         tokens = self.tokens
