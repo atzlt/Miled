@@ -32,7 +32,7 @@ def def_new_caller(param_list: list[str], code: list[Token]):
 
     def run_new_caller(param: list, old_table: Env):
         from interpreter.interpret import Interpreter
-        param = [el[1] for el in param]
+        param = v(param)
         table = Env()
         table.prev = old_table
         for j in range(len(param_list)):
