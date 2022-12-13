@@ -118,21 +118,14 @@ class InterpreterTestCase(unittest.TestCase):
                 for i in range(1, 101)
             ]),
             Interpreter(r"""
-            := x 0
-            := s []
-            while: ~ += x 1 != x 101 ;
-                push s if::
-                    & div 3 x div 5 x "FizzBuzz"
-                    else
-                        if:: div 3 x "Fizz"
-                        else
-                            if:: div 5 x "Buzz"
-                            else ->str x
-                            :fi
-                        :fi
-                    :fi
-            :ihw
-            join "\n" s
+            def f cS "x" <:
+                := a div 3 x := b div 5 x
+                if:: & a b "FizzBuzz"
+                else if:: a "Fizz"
+                else if:: b "Buzz"
+                else ->str x
+            :>
+            join "\n" map f ;! ..= 1 100
             """).run()
         )
         self.assertEqual(
@@ -155,7 +148,7 @@ class InterpreterTestCase(unittest.TestCase):
             # Euclid Algorithm
             3,
             Interpreter(r"""
-            def gcd /S "xy" <:
+            def gcd cS "xy" <:
                 if:: div min x y max x y min x y
                 else gcd min x y % max x y min x y :fi
             :>
