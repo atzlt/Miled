@@ -1,29 +1,20 @@
 import random
 from copy import deepcopy as copy
 from math import *
-
 from interpreter.util_classes import Caller, Env, Token
-
-
 def product(x):
     p = 1
     for a in x:
         p *= a
     return p
-
-
 def sort(x):
     x = list(x)
     x.sort()
     return x
-
-
 def pop(x, t):
     c = x[0][1][-1]
     t.set(x[0][0], x[0][1][:-1])
     return c, None
-
-
 def def_new_caller(param_list: list[str], code: list[Token]):
     call_id = str(random.randint(0, 65535))
     suffix = "$call_arg$" + call_id
@@ -45,15 +36,11 @@ def def_new_caller(param_list: list[str], code: list[Token]):
         len(param_list),
         run_new_caller
     )
-
-
 def map_over(f: Caller, old_list: list, table: Env):
     return [
         copy(f).add_args([(None, i)]).enclose().resolve(table)[0]
         for i in old_list
     ]
-
-
 BUILTINS_TABLE = Env(table={
     "<-": Caller(2, lambda x, t: (t.s(x[0][0], x[1][1]), None)),
     ":=": Caller(2, lambda x, t: (t.d(x[0][0], x[1][1]), None)),

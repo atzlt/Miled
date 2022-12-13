@@ -120,7 +120,7 @@ def <name of caller> <list of param> <: ... :>
 Still, nothing much to explain. Example:
 
 ```
-def gcd /S "xy" <:
+def gcd cS "xy" <:
     if:: div min x y max x y min x y
     else gcd min x y % max x y min x y :fi
 :>

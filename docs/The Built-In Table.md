@@ -60,7 +60,7 @@ They're the same as Python's builtin functions.
 |     `@?`      |   `@? list val`    | First index of `val` in `list`.                                                                            |
 | `[:]`, `[::]` | `[:] list num num` | Same as Python slices.                                                                                     |
 |     `+@`      | `+@ list num val`  | Append `val` before index `num` in `list`.                                                                 |
-|     `/S`      |      `/S str`      | Split (same as Python `.split("")`                                                                         |
+|     `cS`      |      `cS str`      | Split (same as Python `.split("")`                                                                         |
 |     `wS`      |      `wS str`      | Split by whitespace (same as Python `.split()`)                                                            |
 |     `,S`      |      `,S str`      | Split by comma (same as Python `.split(",")`)                                                              |
 |    `join`     |  `join str list`   | Join by string (same as Python `.join()`                                                                   |
@@ -82,4 +82,5 @@ For callers with note `(l)`, adding `l` to it forms its list form.
 | Caller / Variable |       Usage       | Function                 |
 |:-----------------:|:-----------------:|:-------------------------|
 |       `div`       | `div small large` | Divides. Returns `bool`. |
+
 
