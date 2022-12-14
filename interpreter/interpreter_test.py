@@ -64,10 +64,6 @@ class InterpreterTestCase(unittest.TestCase):
 
     def test_interpreter(self):
         self.assertEqual(
-            3,
-            Interpreter("<- x 3 x").run()
-        )
-        self.assertEqual(
             True,
             Interpreter("<- x n+ ;! > x 1 ; 0").run()
         )
@@ -148,8 +144,12 @@ class InterpreterTestCase(unittest.TestCase):
             Interpreter(":= x [ 1 2 3 ; map fn cS \"x\" <: + x 1 :> x").run()
         )
         self.assertEqual(
-            # Euclid Algorithm
             3,
+            Interpreter(":= x [ 1 2 3 ; := y 0 ~ map fn [] <: += y 1 :> x y ;").run()
+        )
+        self.assertEqual(
+            # Euclid Algorithm
+            1,
             Interpreter(r"""
             def myGcd cS "xy" <:
                 if:: div min x y max x y min x y
@@ -159,7 +159,7 @@ class InterpreterTestCase(unittest.TestCase):
                 while: >= len x 2 pushto myGcd pop x pop x x :ihw
                 @ x 0
             :>
-            myLGcd [ 39 15 78 ;
+            myLGcd [ 63245986 102334155 ;
             """).run()
         )
         self.assertEqual(

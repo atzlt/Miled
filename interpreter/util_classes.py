@@ -6,7 +6,6 @@ class Token:
     VAL = 1
     ID = 2
     KW = 3
-    CODE = 4
 
     def __init__(self, kind: int, value=None):
         self.kind = kind
@@ -110,9 +109,10 @@ class Caller:
         return self.arity - len(self.args)
 
     def add_args(self, args: list[tuple[str | None, any]]):
-        if self.arity > 0 and self.args_left() < len(args):
-            raise RuntimeError("Too many arguments: expected " + str(self.arity) + ", got " + str(len(args)))
-        self.args += args
+        if self.arity >= 0:
+            self.args += args[:self.args_left()]
+        else:
+            self.args += args
         return self
 
     def enclose(self):
