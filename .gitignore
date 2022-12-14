@@ -4,5 +4,5 @@ test/
 dist-*/
 build/
 assets/
-run-miled.spec
+miled.spec
 pyinstaller-build

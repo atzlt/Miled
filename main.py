@@ -9,7 +9,7 @@ def try_run(code: str):
     except Exception as IE:
         print("Cannot run program, an error occurred:")
         print(IE)
-        print("near: \"" + str(itpr.tokens[itpr.i].value) + "\" at word #" + str(itpr.i))
+        print("near: " + str(itpr.tokens[itpr.i].value) + ", at word #" + str(itpr.i))
         print("Check your code. If you confirm there shouldn't be any problem, report an issue.")
 
 
