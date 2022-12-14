@@ -61,6 +61,14 @@ class InterpreterTestCase(unittest.TestCase):
             ],
             [a.jump_to for a in get_anchors(tokenize("while: <: x while: :> 1 :ihw")).values()]
         )
+        self.assertEqual(
+            [
+                [31]
+            ],
+            [a.jump_to for a in get_anchors(tokenize(
+                "def g [ \"n\" ; <: := x 1 ~ map fn [] <: += x / - cos x x + 1 sin x :> ..< 0 n x ; :>"
+            )).values()]
+        )
 
     def test_interpreter(self):
         self.assertEqual(
@@ -180,6 +188,13 @@ class InterpreterTestCase(unittest.TestCase):
         self.assertEqual(
             [2, 4, 3],
             Interpreter(":= x [ 1 2 3 ; ~ -@ x 0 +@ x 1 4 x ;").run()
+        )
+        self.assertAlmostEqual(
+            0.7390851332151607,
+            Interpreter(r"""
+            def g [ "n" ; <: := x 1 ~ map fn [] <: += x / - cos x x + 1 sin x :> ..< 0 n x ; :>
+            g 10
+            """).run()
         )
 
 

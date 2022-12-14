@@ -90,7 +90,7 @@ class Interpreter:
             self.run_step()
 
         if len(self.var_stack[0]) == 0:
-            return ""
+            return None
         elif len(self.var_stack[0]) == 1:
             return self.get_val(self.var_stack[0][0])
         else:

@@ -150,13 +150,16 @@ def get_anchors(tokens: list[Token]):
 
         else:
             # proc depth > 0 means we're inside a function definition, where we should jump to the matching end
-            if kw == ":>":
-                while len(kw_stack) > 0 and kw_stack[-1][1] != "<:":
+            if kw == "<:":
+                proc_depth += 1
+            elif kw == ":>":
+                proc_depth -= 1
+                if proc_depth == 0:
+                    while len(kw_stack) > 0 and kw_stack[-1][1] != "<:":
+                        anchors[kw_stack[-1][0]].add_jump(i)
+                        kw_stack.pop()
                     anchors[kw_stack[-1][0]].add_jump(i)
                     kw_stack.pop()
-                anchors[kw_stack[-1][0]].add_jump(i)
-                kw_stack.pop()
-                proc_depth -= 1
     while len(kw_stack) > 0:
         anchors[kw_stack[-1][0]].add_jump(len(tokens))
         kw_stack.pop()
