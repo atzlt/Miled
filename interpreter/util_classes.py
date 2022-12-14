@@ -43,7 +43,7 @@ class Env:
         else:
             return None
 
-    def force_def(self, key: str, val):
+    def def_here(self, key: str, val):
         self.table[key] = val
 
     def set(self, key: str, val, origin=True):
@@ -64,7 +64,7 @@ class Env:
                 return False
 
     s = set
-    d = force_def
+    d = def_here
 
 
 class Caller:

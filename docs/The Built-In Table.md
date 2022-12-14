@@ -47,6 +47,10 @@ They're the same as Python's builtin functions.
 
 ## More Things
 
+There are ***lots*** of built-in callers in this category, and the ones listed here are only _some_ of them. I may
+complete this list later, but for now, you can refer to `interpreter/buitins.py` to see the full implementation. It
+shouldn't be very hard to understand.
+
 ### List and String Manipulation
 
 |    Caller     |       Usage        | Function                                        |
